@@ -1,0 +1,148 @@
+<?php
+ob_start(); // Avvia il buffering dell'output per prevenire errori di redirect
+require 'includes/config.php';
+session_start();
+
+// Debug: verifica stato sessione
+error_log("Debug edit_recipe: Session = " . print_r($_SESSION, true));
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: " . BASE_PATH . "login");
+    exit;
+}
+
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    $_SESSION['error'] = "ID ricetta mancante o non valido";
+    header("Location: " . BASE_PATH . "index");
+    exit;
+}
+
+$stmt = $pdo->prepare("SELECT * FROM recipes WHERE id = ? AND user_id = ?");
+$stmt->execute([$_GET['id'], $_SESSION['user_id']]);
+$recipe = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$recipe) {
+    $_SESSION['error'] = "Ricetta non trovata o non autorizzato";
+    header("Location: " . BASE_PATH . "index");
+    exit;
+}
+
+// Genera un token CSRF
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Verifica il token CSRF
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $_SESSION['error'] = "Errore di validazione CSRF";
+        header("Location: " . BASE_PATH . "index");
+        exit;
+    }
+
+    if (isset($_POST['action']) && $_POST['action'] === 'delete') {
+        // Elimina la ricetta
+        try {
+            $stmt = $pdo->prepare("DELETE FROM recipes WHERE id = ? AND user_id = ?");
+            $stmt->execute([$_GET['id'], $_SESSION['user_id']]);
+            error_log("Debug edit_recipe: Ricetta eliminata: id={$_GET['id']}, user_id={$_SESSION['user_id']}");
+            unset($_SESSION['csrf_token']);
+            $_SESSION['success'] = "Ricetta eliminata con successo";
+            header("Location: " . BASE_PATH . "index");
+            exit;
+        } catch (PDOException $e) {
+            error_log("Errore eliminazione ricetta: " . $e->getMessage());
+            $error = "Errore durante l'eliminazione della ricetta.";
+        }
+    } else {
+        // Modifica la ricetta
+        $title = trim($_POST['title']);
+        $ingredients = trim($_POST['ingredients']);
+        $instructions = trim($_POST['instructions']);
+        $prep_time = filter_var($_POST['prep_time'], FILTER_SANITIZE_NUMBER_INT);
+        $servings = filter_var($_POST['servings'], FILTER_SANITIZE_NUMBER_INT);
+
+        // Validazione
+        if (empty($title) || empty($ingredients) || empty($instructions) || $prep_time <= 0 || $servings <= 0) {
+            $error = "Tutti i campi sono obbligatori e devono essere validi";
+        } else {
+            try {
+                $stmt = $pdo->prepare("UPDATE recipes SET title = ?, ingredients = ?, instructions = ?, prep_time = ?, servings = ? WHERE id = ? AND user_id = ?");
+                $stmt->execute([$title, $ingredients, $instructions, $prep_time, $servings, $_GET['id'], $_SESSION['user_id']]);
+                error_log("Debug edit_recipe: Ricetta modificata: id={$_GET['id']}, title=$title, user_id={$_SESSION['user_id']}");
+                unset($_SESSION['csrf_token']);
+                $_SESSION['success'] = "Ricetta modificata con successo";
+                header("Location: " . BASE_PATH . "view_recipe?id=" . $_GET['id']);
+                exit;
+            } catch (PDOException $e) {
+                error_log("Errore modifica ricetta: " . $e->getMessage());
+                $error = "Errore nel salvataggio delle modifiche.";
+            }
+        }
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#007bff">
+    <title>Modifica Ricetta</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php echo BASE_PATH; ?>css/style.css" rel="stylesheet">
+    <link rel="manifest" href="<?php echo BASE_PATH; ?>manifest.json">
+    <link rel="apple-touch-icon" href="<?php echo BASE_PATH; ?>images/icon-192x192.png">
+    <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
+</head>
+<body>
+    <?php include 'includes/header.php'; ?>
+    <div class="container">
+        <h1>Modifica Ricetta</h1>
+        <?php
+        if (isset($error)) {
+            echo "<div class='alert alert-danger'>$error</div>";
+        }
+        if (isset($_SESSION['error'])) {
+            echo "<div class='alert alert-danger'>" . htmlspecialchars($_SESSION['error']) . "</div>";
+            unset($_SESSION['error']);
+        }
+        if (isset($_SESSION['success'])) {
+            echo "<div class='alert alert-success'>" . htmlspecialchars($_SESSION['success']) . "</div>";
+            unset($_SESSION['success']);
+        }
+        ?>
+        <form method="POST" id="edit-form">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+            <div class="mb-3">
+                <label for="title" class="form-label">Titolo</label>
+                <input type="text" class="form-control" id="title" name="title" value="<?php echo isset($_POST['title']) ? htmlspecialchars($_POST['title']) : htmlspecialchars($recipe['title']); ?>" required>
+            </div>
+            <div class="mb-3">
+                <label for="ingredients" class="form-label">Ingredienti (uno per riga)</label>
+                <textarea class="form-control" id="ingredients" name="ingredients" rows="5" required><?php echo isset($_POST['ingredients']) ? htmlspecialchars($_POST['ingredients']) : htmlspecialchars($recipe['ingredients']); ?></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="instructions" class="form-label">Istruzioni</label>
+                <textarea class="form-control" id="instructions" name="instructions" rows="5" required><?php echo isset($_POST['instructions']) ? htmlspecialchars($_POST['instructions']) : htmlspecialchars($recipe['instructions']); ?></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="prep_time" class="form-label">Tempo di preparazione (min)</label>
+                <input type="number" class="form-control" id="prep_time" name="prep_time" min="1" value="<?php echo isset($_POST['prep_time']) ? htmlspecialchars($_POST['prep_time']) : htmlspecialchars($recipe['prep_time']); ?>" required>
+            </div>
+            <div class="mb-3">
+                <label for="servings" class="form-label">Porzioni</label>
+                <input type="number" class="form-control" id="servings" name="servings" min="1" value="<?php echo isset($_POST['servings']) ? htmlspecialchars($_POST['servings']) : htmlspecialchars($recipe['servings']); ?>" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Salva Modifiche</button>
+        <form method="POST" id="delete-form" class="mt-3">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+            <input type="hidden" name="action" value="delete">
+            <button type="submit" class="btn btn-danger" onclick="confirmDelete(event)">Elimina Ricetta</button>
+        </form>
+        </form>
+    </div>
+    <?php include 'includes/footer.php'; ?>
+</body>
+</html>
+<?php ob_end_flush(); // Svuota il buffer e invia l'output ?>

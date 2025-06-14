@@ -1,0 +1,27 @@
+body {
+    padding-top: 20px;
+    font-size: 16px; /* Migliora leggibilità su mobile */
+}
+
+/* Ottimizza card per mobile */
+.card {
+    transition: transform 0.2s;
+    margin-bottom: 15px;
+}
+.card:hover {
+    transform: scale(1.05);
+}
+
+/* Layout per schermi piccoli */
+@media (max-width: 576px) {
+    .container {
+        padding: 10px;
+    }
+    .btn {
+        width: 100%; /* Pulsanti a larghezza piena */
+        margin-bottom: 10px;
+    }
+    #multiplier {
+        width: 100% !important; /* Input moltiplicatore a larghezza piena */
+    }
+}
