@@ -1,6 +1,6 @@
 <?php
 ob_start(); // Avvia il buffering dell'output per prevenire errori di redirect
-require 'includes/config.php';
+require 'includes/config';
 session_start();
 
 // Debug: verifica stato sessione
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
 </head>
 <body>
-    <?php include 'includes/header.php'; ?>
+    <?php include 'includes/header'; ?>
     <div class="container">
         <h1>Aggiungi Nuova Ricetta</h1>
         <?php
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button type="submit" class="btn btn-primary">Salva Ricetta</button>
         </form>
     </div>
-    <?php include 'includes/footer.php'; ?>
+    <?php include 'includes/footer'; ?>
 </body>
 </html>
 <?php ob_end_flush(); ?>

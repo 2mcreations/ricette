@@ -1,19 +1,19 @@
 <?php
 ob_start(); // Avvia il buffering dell'output per prevenire errori di redirect
-require 'includes/config.php';
+require 'includes/config';
 session_start();
 
 // Debug: verifica stato sessione
 error_log("Debug edit_recipe: Session = " . print_r($_SESSION, true));
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: " . BASE_PATH . "login.php");
+    header("Location: " . BASE_PATH . "login");
     exit;
 }
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $_SESSION['error'] = "ID ricetta mancante o non valido";
-    header("Location: " . BASE_PATH . "index.php");
+    header("Location: " . BASE_PATH . "index" );
     exit;
 }
 
@@ -23,7 +23,7 @@ $recipe = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$recipe) {
     $_SESSION['error'] = "Ricetta non trovata o non autorizzato";
-    header("Location: " . BASE_PATH . "index.php");
+    header("Location: " . BASE_PATH . "index");
     exit;
 }
 
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verifica il token CSRF
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['error'] = "Errore di validazione CSRF";
-        header("Location: " . BASE_PATH . "index.php");
+        header("Location: " . BASE_PATH . "index");
         exit;
     }
 
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             error_log("Debug edit_recipe: Ricetta eliminata: id={$_GET['id']}, user_id={$_SESSION['user_id']}");
             unset($_SESSION['csrf_token']);
             $_SESSION['success'] = "Ricetta eliminata con successo";
-            header("Location: " . BASE_PATH . "index.php");
+            header("Location: " . BASE_PATH . "index");
             exit;
         } catch (PDOException $e) {
             error_log("Errore eliminazione ricetta: " . $e->getMessage());
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 error_log("Debug edit_recipe: Ricetta modificata: id={$_GET['id']}, title=$title, user_id={$_SESSION['user_id']}");
                 unset($_SESSION['csrf_token']);
                 $_SESSION['success'] = "Ricetta modificata con successo";
-                header("Location: " . BASE_PATH . "view_recipe.php?id=" . $_GET['id']);
+                header("Location: " . BASE_PATH . "view_recipe?id=" . $_GET['id']);
                 exit;
             } catch (PDOException $e) {
                 error_log("Errore modifica ricetta: " . $e->getMessage());
@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
 </head>
 <body>
-    <?php include 'includes/header.php'; ?>
+    <?php include 'includes/header'; ?>
     <div class="container">
         <h1>Modifica Ricetta</h1>
         <?php
@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </form>
         </form>
     </div>
-    <?php include 'includes/footer.php'; ?>
+    <?php include 'includes/footer'; ?>
 </body>
 </html>
-<?php ob_end_flush(); // Svuota il buffer e invia l'output ?>
+<?php ob_end_flush(); ?>

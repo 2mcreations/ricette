@@ -1,6 +1,6 @@
 <?php
 ob_start();
-require 'includes/config.php';
+require 'includes/config';
 session_start();
 
 // Debug: verifica sessione
@@ -8,7 +8,7 @@ error_log("Debug register: Session = " . print_r($_SESSION, true));
 
 // Se l'utente è loggato, reindirizza
 if (isset($_SESSION['user_id'])) {
-    header("Location: " . BASE_PATH . "index.php");
+    header("Location: " . BASE_PATH . "index");
     exit;
 }
 
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verifica CSRF
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['error'] = "Errore di validazione CSRF";
-        header("Location: " . BASE_PATH . "register.php");
+        header("Location: " . BASE_PATH . "register");
         exit;
     }
 
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 error_log("Debug register: Utente registrato: $username");
                 unset($_SESSION['csrf_token']);
                 $_SESSION['success'] = "Registrazione completata! Accedi ora.";
-                header("Location: " . BASE_PATH . "login.php");
+                header("Location: " . BASE_PATH . "login");
                 exit;
             }
         } catch (PDOException $e) {
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
 </head>
 <body>
-    <?php include 'includes/header.php'; ?>
+    <?php include 'includes/header'; ?>
     <div class="container">
         <h1>Registrazione</h1>
         <?php
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </form>
         <p class="mt-3">Hai già un account? <a href="<?php echo BASE_PATH; ?>login">Accedi</a></p>
     </div>
-    <?php include 'includes/footer.php'; ?>
+    <?php include 'includes/footer'; ?>
 </body>
 </html>
 <?php ob_end_flush(); ?>

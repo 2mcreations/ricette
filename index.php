@@ -1,6 +1,6 @@
 <?php
 ob_start();
-require 'includes/config.php';
+require 'includes/config';
 session_start();
 
 // Debug: verifica stato sessione
@@ -36,7 +36,7 @@ try {
     <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
 </head>
 <body>
-    <?php include 'includes/header.php'; ?>
+    <?php include 'includes/header'; ?>
     <div class="container">
         <h1>Le Mie Ricette</h1>
         <?php
@@ -65,7 +65,7 @@ try {
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo htmlspecialchars($recipe['title']); ?></h5>
                                 <p class="card-text">Tempo: <?php echo htmlspecialchars($recipe['prep_time']); ?> min</p>
-                                <a href="<?php echo BASE_PATH; ?>view_recipe.php?id=<?php echo $recipe['id']; ?>" class="btn btn-info">Visualizza</a>
+                                <a href="<?php echo BASE_PATH; ?>view_recipe?id=<?php echo $recipe['id']; ?>" class="btn btn-info">Visualizza</a>
                             </div>
                         </div>
                     </div>
@@ -73,7 +73,7 @@ try {
             <?php endif; ?>
         </div>
     </div>
-    <?php include 'includes/footer.php'; ?>
+    <?php include 'includes/footer'; ?>
 </body>
 </html>
 <?php ob_end_flush(); ?>

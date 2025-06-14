@@ -1,7 +1,6 @@
 const CACHE_NAME = 'ricettario-v1.1.25';
 const STATIC_ASSETS = [
     '/',
-    '/index.php',
     '/css/style.css',
     '/js/script.js',
     '/images/icon-192x192.png',

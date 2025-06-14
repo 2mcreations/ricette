@@ -1,6 +1,6 @@
 <?php
 ob_start();
-require 'includes/config.php';
+require 'includes/config';
 session_start();
 
 // Debug: verifica stato sessione
@@ -8,7 +8,7 @@ error_log("Debug view_recipe: Session = " . print_r($_SESSION, true));
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $_SESSION['error'] = "ID ricetta mancante o non valido";
-    header("Location: " . BASE_PATH . "index.php");
+    header("Location: " . BASE_PATH . "index");
     exit;
 }
 
@@ -18,7 +18,7 @@ $recipe = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$recipe) {
     $_SESSION['error'] = "Ricetta non trovata";
-    header("Location: " . BASE_PATH . "index.php");
+    header("Location: " . BASE_PATH . "index");
     exit;
 }
 
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verifica il token CSRF
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['error'] = "Errore di validazione CSRF";
-        header("Location: " . BASE_PATH . "index.php");
+        header("Location: " . BASE_PATH . "index");
         exit;
     }
 
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Verifica che l'utente sia il proprietario
         if (!isset($_SESSION['user_id']) || $recipe['user_id'] != $_SESSION['user_id']) {
             $_SESSION['error'] = "Non sei autorizzato a eliminare questa ricetta";
-            header("Location: " . BASE_PATH . "index.php");
+            header("Location: " . BASE_PATH . "index");
             exit;
         }
 
@@ -50,12 +50,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             error_log("Debug view_recipe: Ricetta eliminata: id={$_GET['id']}, user_id={$_SESSION['user_id']}");
             unset($_SESSION['csrf_token']);
             $_SESSION['success'] = "Ricetta eliminata con successo";
-            header("Location: " . BASE_PATH . "index.php");
+            header("Location: " . BASE_PATH . "index");
             exit;
         } catch (PDOException $e) {
             error_log("Errore eliminazione ricetta: " . $e->getMessage());
             $_SESSION['error'] = "Errore durante l'eliminazione della ricetta: " . (ini_get('display_errors') ? $e->getMessage() : "contatta l'amministratore.");
-            header("Location: " . BASE_PATH . "view_recipe.php?id=" . $_GET['id']);
+            header("Location: " . BASE_PATH . "view_recipe?id=" . $_GET['id']);
             exit;
         }
     }
@@ -79,7 +79,7 @@ $base_url = ($_SERVER['REQUEST_SCHEME'] ?? 'https') . '://' . $_SERVER['HTTP_HOS
     <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
 </head>
 <body>
-    <?php include 'includes/header.php'; ?>
+    <?php include 'includes/header'; ?>
     <div class="container">
         <h1><?php echo htmlspecialchars($recipe['title']); ?></h1>
         <?php
@@ -130,7 +130,7 @@ $base_url = ($_SERVER['REQUEST_SCHEME'] ?? 'https') . '://' . $_SERVER['HTTP_HOS
             </div>
         <?php endif; ?>
     </div>
-    <?php include 'includes/footer.php'; ?>
+    <?php include 'includes/footer'; ?>
 </body>
 </html>
 <?php ob_end_flush(); ?>

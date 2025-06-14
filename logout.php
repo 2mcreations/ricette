@@ -1,6 +1,6 @@
 <?php
 ob_start();
-require 'includes/config.php';
+require 'includes/config';
 session_start();
 
 // Debug: verifica stato sessione
@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['error'] = "Errore di validazione CSRF";
         error_log("Debug logout: Errore CSRF");
-        header("Location: " . BASE_PATH . "index.php");
+        header("Location: " . BASE_PATH . "index");
         exit;
     }
 
@@ -26,13 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     error_log("Debug logout: Logout effettuato");
     unset($_SESSION['csrf_token']);
     $_SESSION['success'] = "Logout effettuato con successo!";
-    header("Location: " . BASE_PATH . "index.php");
+    header("Location: " . BASE_PATH . "index");
     exit;
 }
 
 // Se l'utente non è loggato, reindirizza a index
 if (!isset($_SESSION['user_id'])) {
-    header("Location: " . BASE_PATH . "index.php");
+    header("Location: " . BASE_PATH . "index");
     exit;
 }
 ?>
@@ -50,7 +50,7 @@ if (!isset($_SESSION['user_id'])) {
     <link rel="apple-touch-icon" href="<?php echo BASE_PATH; ?>images/icon-192x192.png">
 </head>
 <body>
-    <?php include 'includes/header.php'; ?>
+    <?php include 'includes/header'; ?>
     <div class="container mt-5">
         <h1>Logout</h1>
         <?php if (isset($_SESSION['error'])): ?>
@@ -63,10 +63,10 @@ if (!isset($_SESSION['user_id'])) {
         <form method="POST" action="<?php echo htmlspecialchars(BASE_PATH . 'logout'); ?>">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
             <button type="submit" class="btn btn-primary" data-original-text="Esci">Esci</button>
-            <a href="<?php echo BASE_PATH; ?>index.php" class="btn btn-secondary">Annulla</a>
+            <a href="<?php echo BASE_PATH; ?>index" class="btn btn-secondary">Annulla</a>
         </form>
     </div>
-    <?php include 'includes/footer.php'; ?>
+    <?php include 'includes/footer'; ?>
     <script>
         window.basePath = '<?php echo BASE_PATH; ?>';
     </script>

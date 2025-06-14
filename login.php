@@ -1,6 +1,6 @@
 <?php
 ob_start(); // Avvia il buffering dell'output per prevenire errori di redirect
-require 'includes/config.php';
+require 'includes/config';
 session_start();
 
 // Debug: verifica stato sessione
@@ -8,7 +8,7 @@ error_log("Debug login: Session = " . print_r($_SESSION, true));
 
 // Se l'utente è già loggato, reindirizza a index
 if (isset($_SESSION['user_id'])) {
-    header("Location: " . BASE_PATH . "index.php");
+    header("Location: " . BASE_PATH . "index");
     exit;
 }
 
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verifica il token CSRF
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['error'] = "Errore di validazione CSRF";
-        header("Location: " . BASE_PATH . "login.php");
+        header("Location: " . BASE_PATH . "login");
         exit;
     }
 
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 unset($_SESSION['csrf_token']);
                 session_write_close();
                 $_SESSION['success'] = "Login effettuato con successo!";
-                header("Location: " . BASE_PATH . "index.php");
+                header("Location: " . BASE_PATH . "index");
                 exit;
             } else {
                 $error = "Username o password non validi.";
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
 </head>
 <body>
-    <?php include 'includes/header.php'; ?>
+    <?php include 'includes/header'; ?>
     <div class="container">
         <h1>Login</h1>
         <?php
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </form>
         <p class="mt-3">Non hai un account? <a href="<?php echo BASE_PATH; ?>register">Registrati</a></p>
     </div>
-    <?php include 'includes/footer.php'; ?>
+    <?php include 'includes/footer'; ?>
 </body>
 </html>
-<?php ob_end_flush(); // Svuota il buffer e invia l'output ?>
+<?php ob_end_flush(); ?>
