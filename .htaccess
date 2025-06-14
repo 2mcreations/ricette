@@ -1,9 +1,22 @@
 RewriteEngine On
+#RewriteBase /ricettario/
 
-# Rimuove l'estensione .php dagli URL (es. /view_recipe invece di /view_recipe.php)
+# Impedisce la visualizzazione dei file .htaccess
+<Files .htaccess>
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Reindirizza richieste con .php alla versione senza .php (es. /logout.php → /logout)
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L]
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)\.php$ $1 [R=301,L]
 
-# Reindirizzamento ricetta (percorso senza .php)
-RewriteRule ^recipe/([0-9]+)$ view_recipe.php?id=$1 [L]
+# Riscrive URL senza .php ai file PHP corrispondenti (es. /logout → /logout.php)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# Gestione della homepage (opzionale, per / → /index.php)
+RewriteRule ^$ index.php [L]
