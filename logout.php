@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verifica il token CSRF
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['error'] = "Errore di validazione CSRF";
-        header("Location: " . BASE_PATH . "index");
+        header("Location: " . BASE_PATH . "index.php");
         exit;
     }
 
@@ -25,13 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     error_log("Debug logout: Logout effettuato");
     unset($_SESSION['csrf_token']);
     $_SESSION['success'] = "Logout effettuato con successo!";
-    header("Location: " . BASE_PATH . "index");
+    header("Location: " . BASE_PATH . "index.php");
     exit;
 }
 
 // Se l'utente non è loggato, reindirizza a index
 if (!isset($_SESSION['user_id'])) {
-    header("Location: " . BASE_PATH . "index");
+    header("Location: " . BASE_PATH . "index.php");
     exit;
 }
 ?>
@@ -72,4 +72,4 @@ if (!isset($_SESSION['user_id'])) {
     <?php include 'includes/footer.php'; ?>
 </body>
 </html>
-<?php ob_end_flush(); // Svuota il buffer e invia l'output ?>
+<?php ob_end_flush(); ?>

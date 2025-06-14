@@ -113,4 +113,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php include 'includes/footer.php'; ?>
 </body>
 </html>
-<?php ob_end_flush(); // Svuota il buffer e invia l'output ?>
+<?php ob_end_flush(); ?>

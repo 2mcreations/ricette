@@ -65,7 +65,7 @@ try {
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo htmlspecialchars($recipe['title']); ?></h5>
                                 <p class="card-text">Tempo: <?php echo htmlspecialchars($recipe['prep_time']); ?> min</p>
-                                <a href="<?php echo BASE_PATH; ?>view_recipe?id=<?php echo $recipe['id']; ?>" class="btn btn-info">Visualizza</a>
+                                <a href="<?php echo BASE_PATH; ?>view_recipe.php?id=<?php echo $recipe['id']; ?>" class="btn btn-info">Visualizza</a>
                             </div>
                         </div>
                     </div>

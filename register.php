@@ -8,7 +8,7 @@ error_log("Debug register: Session = " . print_r($_SESSION, true));
 
 // Se l'utente è loggato, reindirizza
 if (isset($_SESSION['user_id'])) {
-    header("Location: " . BASE_PATH . "index");
+    header("Location: " . BASE_PATH . "index.php");
     exit;
 }
 
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verifica CSRF
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['error'] = "Errore di validazione CSRF";
-        header("Location: " . BASE_PATH . "register");
+        header("Location: " . BASE_PATH . "register.php");
         exit;
     }
 
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 error_log("Debug register: Utente registrato: $username");
                 unset($_SESSION['csrf_token']);
                 $_SESSION['success'] = "Registrazione completata! Accedi ora.";
-                header("Location: " . BASE_PATH . "login");
+                header("Location: " . BASE_PATH . "login.php");
                 exit;
             }
         } catch (PDOException $e) {

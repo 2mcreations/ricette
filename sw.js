@@ -1,6 +1,7 @@
-const CACHE_NAME = 'ricettario-v1.1.23';
+const CACHE_NAME = 'ricettario-v1.1.24';
 const STATIC_ASSETS = [
     '<?php echo BASE_PATH; ?>',
+    '<?php echo BASE_PATH; ?>index',
     '<?php echo BASE_PATH; ?>css/style.css',
     '<?php echo BASE_PATH; ?>js/script.js',
     '<?php echo BASE_PATH; ?>images/icon-192x192.png',
@@ -45,8 +46,8 @@ self.addEventListener('fetch', event => {
     if (
         !url.protocol.startsWith('http') ||
         event.request.method !== 'GET' ||
-        url.pathname.includes('/admin/') ||
-        url.pathname.includes('/api/')
+        url.pathname.includes('/login/') ||
+        url.pathname.includes('/logout/')
     ) {
         console.log('Service Worker: Ignorata richiesta:', url.pathname);
         event.respondWith(

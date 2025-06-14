@@ -1,2 +1,9 @@
 RewriteEngine On
+
+# Rimuove l'estensione .php dagli URL (es. /view_recipe invece di /view_recipe.php)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L]
+
+# Reindirizzamento ricetta (percorso senza .php)
 RewriteRule ^recipe/([0-9]+)$ view_recipe.php?id=$1 [L]

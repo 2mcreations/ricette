@@ -2,18 +2,18 @@
 
 // Configura i cookie di sessione
 session_set_cookie_params([
-    'lifetime' => 0, // Sessione valida fino alla chiusura del browser
+    'lifetime' => 0,
     'path' => '/',
-    'domain' => null, // Usa il dominio corrente
+    'domain' => 'ricette.example.com',
     'secure' => true, // Solo HTTPS
     'httponly' => true, // Non accessibile da JavaScript
     'samesite' => 'Lax' // Protezione CSRF
 ]);
 
 $host = 'localhost';
-$dbname = 'xh2mcrea_ricette';
-$username = 'xh2mcrea_ricette';
-$password = ',v#$g{rmEwNe';
+$dbname = 'dbname';
+$username = 'username';
+$password = 'password';
 
 define('BASE_PATH', '/');
 

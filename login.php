@@ -8,7 +8,7 @@ error_log("Debug login: Session = " . print_r($_SESSION, true));
 
 // Se l'utente è già loggato, reindirizza a index
 if (isset($_SESSION['user_id'])) {
-    header("Location: " . BASE_PATH . "index");
+    header("Location: " . BASE_PATH . "index.php");
     exit;
 }
 
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verifica il token CSRF
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['error'] = "Errore di validazione CSRF";
-        header("Location: " . BASE_PATH . "login");
+        header("Location: " . BASE_PATH . "login.php");
         exit;
     }
 
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 unset($_SESSION['csrf_token']);
                 session_write_close();
                 $_SESSION['success'] = "Login effettuato con successo!";
-                header("Location: " . BASE_PATH . "index");
+                header("Location: " . BASE_PATH . "index.php");
                 exit;
             } else {
                 $error = "Username o password non validi.";
