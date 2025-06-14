@@ -131,3 +131,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
     });
     document.querySelector('.container')?.appendChild(installButton);
 });
+
+// Inizializzazione al caricamento
+window.addEventListener('load', () => {
+    console.log('Window load: Inizializzazione');
+    setupFormSubmission();
+    setupShareButton();
+});
