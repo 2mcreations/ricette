@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ricettario-v1.1.26';
+const CACHE_NAME = 'ricettario-v1.1.27';
 const STATIC_ASSETS = [
     '/',
     '/css/style.css',

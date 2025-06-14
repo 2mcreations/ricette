@@ -1,6 +1,6 @@
 <?php
 ob_start();
-require 'includes/config';
+require 'includes/config.php';
 session_start();
 
 // Debug: verifica stato sessione
@@ -50,7 +50,7 @@ if (!isset($_SESSION['user_id'])) {
     <link rel="apple-touch-icon" href="<?php echo BASE_PATH; ?>images/icon-192x192.png">
 </head>
 <body>
-    <?php include 'includes/header'; ?>
+    <?php include 'includes/header.php'; ?>
     <div class="container mt-5">
         <h1>Logout</h1>
         <?php if (isset($_SESSION['error'])): ?>
@@ -66,7 +66,7 @@ if (!isset($_SESSION['user_id'])) {
             <a href="<?php echo BASE_PATH; ?>index" class="btn btn-secondary">Annulla</a>
         </form>
     </div>
-    <?php include 'includes/footer'; ?>
+    <?php include 'includes/footer.php'; ?>
     <script>
         window.basePath = '<?php echo BASE_PATH; ?>';
     </script>

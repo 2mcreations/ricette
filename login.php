@@ -1,6 +1,6 @@
 <?php
 ob_start(); // Avvia il buffering dell'output per prevenire errori di redirect
-require 'includes/config';
+require 'includes/config.php';
 session_start();
 
 // Debug: verifica stato sessione
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
 </head>
 <body>
-    <?php include 'includes/header'; ?>
+    <?php include 'includes/header.php'; ?>
     <div class="container">
         <h1>Login</h1>
         <?php
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </form>
         <p class="mt-3">Non hai un account? <a href="<?php echo BASE_PATH; ?>register">Registrati</a></p>
     </div>
-    <?php include 'includes/footer'; ?>
+    <?php include 'includes/footer.php'; ?>
 </body>
 </html>
 <?php ob_end_flush(); ?>

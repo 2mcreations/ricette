@@ -1,6 +1,6 @@
 <?php
 ob_start();
-require 'includes/config';
+require 'includes/config.php';
 session_start();
 
 // Debug: verifica stato sessione
@@ -79,7 +79,7 @@ $base_url = ($_SERVER['REQUEST_SCHEME'] ?? 'https') . '://' . $_SERVER['HTTP_HOS
     <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
 </head>
 <body>
-    <?php include 'includes/header'; ?>
+    <?php include 'includes/header.php'; ?>
     <div class="container">
         <h1><?php echo htmlspecialchars($recipe['title']); ?></h1>
         <?php
@@ -130,7 +130,7 @@ $base_url = ($_SERVER['REQUEST_SCHEME'] ?? 'https') . '://' . $_SERVER['HTTP_HOS
             </div>
         <?php endif; ?>
     </div>
-    <?php include 'includes/footer'; ?>
+    <?php include 'includes/footer.php'; ?>
 </body>
 </html>
 <?php ob_end_flush(); ?>

@@ -1,6 +1,6 @@
 <?php
 ob_start();
-require 'includes/config';
+require 'includes/config.php';
 session_start();
 
 // Debug: verifica stato sessione
@@ -36,7 +36,7 @@ try {
     <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
 </head>
 <body>
-    <?php include 'includes/header'; ?>
+    <?php include 'includes/header.php'; ?>
     <div class="container">
         <h1>Le Mie Ricette</h1>
         <?php
@@ -73,7 +73,7 @@ try {
             <?php endif; ?>
         </div>
     </div>
-    <?php include 'includes/footer'; ?>
+    <?php include 'includes/footer.php'; ?>
 </body>
 </html>
 <?php ob_end_flush(); ?>
