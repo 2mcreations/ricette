@@ -1,3 +1,4 @@
+const DEBUG = false;
 const CACHE_NAME = 'ricettario-v1.1.46';
 const STATIC_ASSETS = [
     '/css/style.css',

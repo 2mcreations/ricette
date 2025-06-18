@@ -1,3 +1,4 @@
+const DEBUG = false;
 // Registrazione Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
