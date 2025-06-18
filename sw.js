@@ -1,10 +1,8 @@
-const CACHE_NAME = 'ricettario-v1.1.28';
+const CACHE_NAME = 'ricettario-v1.1.46';
 const STATIC_ASSETS = [
-    '/',
     '/css/style.css',
     '/js/script.js',
     '/images/icon-192x192.png',
-    '/images/icon-512x512.png',
     '/manifest.json',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js',
@@ -13,14 +11,13 @@ const STATIC_ASSETS = [
 
 // Installazione: cache delle risorse statiche
 self.addEventListener('install', event => {
-    console.log('Service Worker: Installazione', CACHE_NAME);
+    if (DEBUG) console.log('Service Worker: Installazione', CACHE_NAME);
     event.waitUntil(
         caches.open(CACHE_NAME).then(cache => {
             return cache.addAll(STATIC_ASSETS).catch(error => {
                 console.error('Errore durante il caching iniziale:', error);
             });
         }).then(() => {
-            console.log('Service Worker: Skip waiting');
             return self.skipWaiting();
         })
     );
@@ -28,66 +25,52 @@ self.addEventListener('install', event => {
 
 // Attivazione: pulizia cache obsolete e controllo client
 self.addEventListener('activate', event => {
-    console.log('Service Worker: Attivazione', CACHE_NAME);
+    if (DEBUG) console.log('Service Worker: Attivazione', CACHE_NAME);
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.filter(name => name !== CACHE_NAME).map(name => {
-                    console.log('Service Worker: Eliminazione cache obsoleta:', name);
+                    if (DEBUG) console.log('Service Worker: Eliminazione cache obsoleta:', name);
                     return caches.delete(name);
-                })
-            );
+                }))
         }).then(() => {
-            console.log('Service Worker: Claim clients');
             return self.clients.claim();
         })
     );
 });
 
-// Gestione richieste
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
-    console.log('Service Worker: Fetch', url.pathname, event.request.method);
 
-    // Ignora richieste non-HTTP/HTTPS, non-GET, o specifiche
+    // Ignora richieste non HTTP
+    if (!url.protocol.startsWith('http')) return;
+
+    // Escludi pagine dinamiche (.php, .html, root /, ecc.)
     if (
-        !url.protocol.startsWith('http') ||
-        event.request.method !== 'GET' ||
-        url.pathname.includes('/admin/') ||
-        url.pathname.includes('/api/') ||
-        url.pathname.match(/^\/(index|login|register|add_recipe|edit_recipe|view_recipe|logout)$/i) // Ignora pagine dinamiche
+        url.pathname === '/' ||
+        url.pathname.endsWith('.php') ||
+        url.pathname.endsWith('/index') ||
+        event.request.headers.get('accept')?.includes('text/html')
     ) {
-        console.log('Service Worker: Ignorata richiesta:', url.pathname);
-        event.respondWith(
-            fetch(event.request).catch(error => {
-                console.error('Errore di rete per richiesta ignorata:', error, url.pathname);
-                return new Response('Errore di rete', { status: 500 });
-            })
-        );
+        if (DEBUG) console.log('Service Worker: Ignora cache per', url.href);
         return;
     }
 
-    // Cache-first per risorse statiche
+    // Per asset statici: cache-first strategy
     event.respondWith(
-        caches.match(event.request).then(response => {
-            if (response) {
-                console.log('Service Worker: Risposta dalla cache:', url.pathname);
-                return response;
-            }
-            console.log('Service Worker: Fetch dalla rete:', url.pathname);
-            return fetch(event.request, { redirect: 'follow' }).then(networkResponse => {
-                if (!networkResponse || !networkResponse.ok || networkResponse.type === 'opaqueredirect') {
-                    return networkResponse;
-                }
-                const responseToCache = networkResponse.clone();
-                caches.open(CACHE_NAME).then(cache => {
-                    cache.put(event.request, responseToCache).catch(error => {
-                        console.error('Errore durante il caching:', error);
+        caches.match(event.request).then(cachedResponse => {
+            if (cachedResponse) return cachedResponse;
+
+            return fetch(event.request).then(networkResponse => {
+                if (networkResponse.ok) {
+                    const responseClone = networkResponse.clone();
+                    caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, responseClone).catch(console.error);
                     });
-                });
+                }
                 return networkResponse;
             }).catch(error => {
-                console.error('Errore di rete:', error);
+                console.error('Errore durante il fetch da rete:', error);
                 return new Response('Errore di rete', { status: 500 });
             });
         })
@@ -96,7 +79,7 @@ self.addEventListener('fetch', event => {
 
 // Gestione messaggi per evitare errori di porta chiusa
 self.addEventListener('message', event => {
-    console.log('Service Worker: Messaggio ricevuto:', event.data);
+    if (DEBUG) console.log('Service Worker: Messaggio ricevuto:', event.data);
     if (event.data === 'ping') {
         event.ports[0]?.postMessage('pong');
     }

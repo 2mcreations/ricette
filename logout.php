@@ -11,7 +11,7 @@ if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Verifica il token CSRF
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['error'] = "Errore di validazione CSRF";
@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     error_log("Debug logout: Logout effettuato");
     unset($_SESSION['csrf_token']);
     $_SESSION['success'] = "Logout effettuato con successo!";
+    session_write_close();
     header("Location: " . BASE_PATH . "index");
     exit;
 }
@@ -48,6 +49,7 @@ if (!isset($_SESSION['user_id'])) {
     <link href="<?php echo BASE_PATH; ?>css/style.css" rel="stylesheet">
     <link rel="manifest" href="<?php echo BASE_PATH; ?>manifest.json">
     <link rel="apple-touch-icon" href="<?php echo BASE_PATH; ?>images/icon-192x192.png">
+    <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
 </head>
 <body>
     <?php include 'includes/header.php'; ?>
@@ -60,17 +62,13 @@ if (!isset($_SESSION['user_id'])) {
             <div class="alert alert-success"><?php echo htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?></div>
         <?php endif; ?>
         <p>Sei sicuro di voler uscire?</p>
-        <form method="POST" action="<?php echo htmlspecialchars(BASE_PATH . 'logout'); ?>">
+        <form method="POST" action="<?php echo BASE_PATH; ?>logout">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-            <button type="submit" class="btn btn-primary" data-original-text="Esci">Esci</button>
+            <button type="submit" class="btn btn-primary" data-loading-text="Elimino Sessione..." data-original-text="Esci">Esci</button>
             <a href="<?php echo BASE_PATH; ?>index" class="btn btn-secondary">Annulla</a>
         </form>
     </div>
     <?php include 'includes/footer.php'; ?>
-    <script>
-        window.basePath = '<?php echo BASE_PATH; ?>';
-    </script>
-    <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
 </body>
 </html>
 <?php ob_end_flush(); ?>

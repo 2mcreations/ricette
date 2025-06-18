@@ -34,13 +34,11 @@ try {
 }
 
 // Genera un token CSRF
-if (!isset($_SESSION['csrf_token'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-$error = '';
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Debug: verifica dati POST
+if ($_SERVER['REQUEST_METHOD'] ==='POST') {
     error_log("Debug edit_recipe: POST ricevuto, dati = " . print_r($_POST, true));
 
     // Verifica il token CSRF
@@ -83,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmt->execute([$title, $ingredients, $instructions, $prep_time, $servings, $_GET['id'], $_SESSION['user_id']]);
                 error_log("Debug edit_recipe: Ricetta modificata: id={$_GET['id']}, title=$title, user_id={$_SESSION['user_id']}");
                 unset($_SESSION['csrf_token']);
-                $_SESSION['success'] = "Ricetta modificata con successo";
+                $_SESSION['success'] = "Ricetta $title modificata con successo";
                 header("Location: " . BASE_PATH . "view_recipe?id=" . $_GET['id']);
                 exit;
             } catch (PDOException $e) {
@@ -106,10 +104,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="<?php echo BASE_PATH; ?>css/style.css" rel="stylesheet">
     <link rel="manifest" href="<?php echo BASE_PATH; ?>manifest.json">
     <link rel="apple-touch-icon" href="<?php echo BASE_PATH; ?>images/icon-192x192.png">
+    <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
 </head>
 <body>
     <?php include 'includes/header.php'; ?>
-    <div class="container mt-5">
+    <div class="container mt-3">
+    <a href="<?php echo BASE_PATH; ?>index" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Torna alle ricette
+    </a>
+    <div class="container">
         <h1>Modifica Ricetta</h1>
         <?php if (isset($error)): ?>
             <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
@@ -120,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php if (isset($_SESSION['success'])): ?>
             <div class="alert alert-success"><?php echo htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?></div>
         <?php endif; ?>
-        <form method="POST" id="edit-form">
+        <form method="POST" id="edit-form" action="<?php echo BASE_PATH; ?>edit_recipe?id=<?php echo $_GET['id']; ?>">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
             <div class="mb-3">
                 <label for="title" class="form-label">Titolo</label>
@@ -142,19 +145,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label for="servings" class="form-label">Porzioni</label>
                 <input type="number" class="form-control" id="servings" name="servings" min="1" value="<?php echo isset($_POST['servings']) ? htmlspecialchars($_POST['servings']) : htmlspecialchars($recipe['servings']); ?>" required>
             </div>
-            <button type="submit" class="btn btn-primary" data-original-text="Salva Modifiche">Salva Modifiche</button>
+            <button type="submit" class="btn btn-primary" data-loading-text="Salvataggio..." data-original-text="Salva Modifiche">Salva Modifiche</button>
         </form>
         <form method="POST" id="delete-form" class="mt-3">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
             <input type="hidden" name="action" value="delete">
-            <button type="submit" class="btn btn-danger" data-original-text="Elimina Ricetta" onclick="confirmDelete(event)">Elimina Ricetta</button>
+            <button type="submit" class="btn btn-danger" data-loading-text="Eliminazione..." data-original-text="Elimina Ricetta" onclick="confirmDelete(event)">Elimina Ricetta</button>
         </form>
     </div>
     <?php include 'includes/footer.php'; ?>
-    <script>
-        window.basePath = '<?php echo BASE_PATH; ?>';
-    </script>
-    <script src="<?php echo BASE_PATH; ?>js/script.js"></script>
 </body>
 </html>
 <?php ob_end_flush(); ?>

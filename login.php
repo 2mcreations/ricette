@@ -1,10 +1,7 @@
 <?php
-ob_start(); // Avvia il buffering dell'output per prevenire errori di redirect
+ob_start();
 require 'includes/config.php';
 session_start();
-
-// Debug: verifica stato sessione
-error_log("Debug login: Session = " . print_r($_SESSION, true));
 
 // Se l'utente è già loggato, reindirizza a index
 if (isset($_SESSION['user_id'])) {
@@ -31,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validazione
     if (empty($username) || empty($password)) {
         $error = "Username e password sono obbligatori.";
-        error_log("Debug login: Input mancanti: username=$username");
     } else {
         try {
             $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE username = ?");
@@ -42,19 +38,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Login riuscito
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
-                error_log("Debug login: Login riuscito: user_id={$user['id']}, username={$user['username']}");
                 unset($_SESSION['csrf_token']);
-                session_write_close();
                 $_SESSION['success'] = "Login effettuato con successo!";
+                session_write_close();
                 header("Location: " . BASE_PATH . "index");
                 exit;
             } else {
                 $error = "Username o password non validi.";
                 error_log("Debug login: Tentativo di login fallito: username=$username");
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             }
         } catch (PDOException $e) {
             error_log("Errore login: " . $e->getMessage());
             $error = "Errore durante il login: " . (ini_get('display_errors') ? $e->getMessage() : "contatta l'amministratore.");
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
     }
 }
@@ -65,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#007bff">
-    <title>Login</title>
+    <title>Login - Ricettario</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="<?php echo BASE_PATH; ?>css/style.css" rel="stylesheet">
     <link rel="manifest" href="<?php echo BASE_PATH; ?>manifest.json">
@@ -89,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             unset($_SESSION['success']);
         }
         ?>
-        <form method="POST">
+        <form method="POST" action="<?php echo BASE_PATH; ?>login">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
@@ -99,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn btn-primary">Accedi</button>
+            <button type="submit" class="btn btn-primary" data-loading-text="Accesso...">Accedi</button>
         </form>
         <p class="mt-3">Non hai un account? <a href="<?php echo BASE_PATH; ?>register">Registrati</a></p>
     </div>

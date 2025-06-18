@@ -1,10 +1,7 @@
 <?php
-ob_start(); // Avvia il buffering dell'output per prevenire errori di redirect
+ob_start();
 require 'includes/config.php';
 session_start();
-
-// Debug: verifica stato sessione
-error_log("Debug add_recipe: Session = " . print_r($_SESSION, true));
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: " . BASE_PATH . "login");
@@ -43,9 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         try {
             $stmt->execute([$title, $ingredients, $instructions, $prep_time, $servings, $public_link, $_SESSION['user_id']]);
             error_log("Debug add_recipe: Ricetta inserita: title=$title, user_id={$_SESSION['user_id']}");
-            // Resetta il token CSRF
             unset($_SESSION['csrf_token']);
-            $_SESSION['success'] = "Ricetta salvata con successo!";
+            $_SESSION['success'] = "$title salvata con successo!";
             header("Location: " . BASE_PATH . "index");
             exit;
         } catch (PDOException $e) {
@@ -70,6 +66,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
     <?php include 'includes/header.php'; ?>
+    <div class="container mt-3">
+    <a href="<?php echo BASE_PATH; ?>index" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Torna alle ricette
+    </a>
     <div class="container">
         <h1>Aggiungi Nuova Ricetta</h1>
         <?php
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             unset($_SESSION['success']);
         }
         ?>
-        <form method="POST">
+        <form method="POST" action="<?php echo BASE_PATH; ?>add_recipe">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
             <div class="mb-3">
                 <label for="title" class="form-label">Titolo</label>
@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label for="servings" class="form-label">Porzioni</label>
                 <input type="number" class="form-control" id="servings" name="servings" min="1" value="<?php echo isset($_POST['servings']) ? htmlspecialchars($_POST['servings']) : ''; ?>" required>
             </div>
-            <button type="submit" class="btn btn-primary">Salva Ricetta</button>
+            <button type="submit" data-loading-text="Salvaggio..." class="btn btn-primary">Salva Ricetta</button>
         </form>
     </div>
     <?php include 'includes/footer.php'; ?>

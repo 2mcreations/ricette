@@ -1,7 +1,6 @@
 // Registrazione Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        // Usa basePath definito nei file PHP
         const swPath = (window.basePath || '') + 'sw.js';
         navigator.serviceWorker.register(swPath).then(registration => {
             // Forza aggiornamento
@@ -16,7 +15,7 @@ if ('serviceWorker' in navigator) {
 
 // Moltiplicatore nelle ricette
 function adjustQuantities(originalServings) {
-    console.log('adjustQuantities: Inizio, multiplier=', document.getElementById('multiplier').value, 'originalServings=', originalServings);
+    if (DEBUG) console.log('adjustQuantities: Inizio, multiplier=', document.getElementById('multiplier').value, 'originalServings=', originalServings);
     const multiplier = parseFloat(document.getElementById('multiplier').value) || 1;
     const ingredients = document.querySelectorAll('#ingredients-list li');
 
@@ -29,29 +28,30 @@ function adjustQuantities(originalServings) {
             let newQuantity = quantity * multiplier;
             let formattedQuantity = newQuantity % 1 === 0 ? parseInt(newQuantity) : newQuantity.toFixed(2);
             ingredient.textContent = `${formattedQuantity} ${unitAndRest}`;
-            console.log('adjustQuantities: Aggiornato ingrediente:', originalText, '→', ingredient.textContent);
+            if (DEBUG) console.log('adjustQuantities: Aggiornato ingrediente:', originalText, '→', ingredient.textContent);
         } else {
             ingredient.textContent = originalText;
-            console.log('adjustQuantities: Ingrediente non numerico:', originalText);
+            if (DEBUG) console.log('adjustQuantities: Ingrediente non numerico:', originalText);
         }
     });
 
     let newServings = originalServings * multiplier;
     document.getElementById('servings').textContent = newServings % 1 === 0 ? parseInt(newServings) : newServings.toFixed(2);
-    console.log('adjustQuantities: Nuove porzioni:', newServings);
+    if (DEBUG) console.log('adjustQuantities: Nuove porzioni:', newServings);
 }
 
 // Prevenire doppia sottomissione dei form
 function setupFormSubmission() {
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
-        const submitButton = form.querySelector('button[type="submit"]');
-        if (submitButton) {
-            form.addEventListener('submit', () => {
+        form.addEventListener('submit', event => {
+            const submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
+            if (submitButton) {
                 submitButton.disabled = true;
-                submitButton.textContent = form.id === 'delete-form' ? 'Eliminazione...' : 'Salvataggio...';
-            });
-        }
+                const loadingText = submitButton.getAttribute('data-loading-text');
+                if (loadingText) submitButton.innerText = loadingText;
+            }
+        });
     });
 }
 
@@ -61,6 +61,7 @@ function confirmDelete(event) {
         event.preventDefault();
     }
 }
+
 // Gestione pulsante di condivisione
 function setupShareButton() {
     const shareButton = document.getElementById('share-recipe');
@@ -82,7 +83,7 @@ function shareRecipe() {
 
     if (navigator.share) {
         navigator.share(shareData).then(() => {
-            console.log('Ricetta condivisa con successo');
+            if (DEBUG) console.log('Ricetta condivisa con successo');
         }).catch(error => {
             console.error('Errore durante la condivisione:', error);
         });
@@ -121,9 +122,9 @@ window.addEventListener('beforeinstallprompt', (e) => {
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choiceResult) => {
             if (choiceResult.outcome === 'accepted') {
-                console.log('PWA installata');
+                if (DEBUG) console.log('PWA installata');
             } else {
-                console.log('Installazione PWA rifiutata');
+                if (DEBUG) console.log('Installazione PWA rifiutata');
             }
             deferredPrompt = null;
             installButton.remove();
@@ -134,7 +135,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 // Inizializzazione al caricamento
 window.addEventListener('load', () => {
-    console.log('Window load: Inizializzazione');
+    if (DEBUG) console.log('Window load: Inizializzazione');
     setupFormSubmission();
     setupShareButton();
 });

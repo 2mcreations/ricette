@@ -77,6 +77,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
     <?php include 'includes/header.php'; ?>
+    <div class="container mt-3">
+    <a href="<?php echo BASE_PATH; ?>index" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Torna alle ricette
+    </a>
     <div class="container">
         <h1>Registrazione</h1>
         <?php
@@ -92,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             unset($_SESSION['success']);
         }
         ?>
-        <form method="POST">
+        <form method="POST" action="<?php echo BASE_PATH; ?>register">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
@@ -106,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn btn-primary">Registrati</button>
+            <button type="submit" data-loading-text="Iscritto!" class="btn btn-primary">Registrati</button>
         </form>
         <p class="mt-3">Hai già un account? <a href="<?php echo BASE_PATH; ?>login">Accedi</a></p>
     </div>

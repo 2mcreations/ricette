@@ -80,6 +80,10 @@ $base_url = ($_SERVER['REQUEST_SCHEME'] ?? 'https') . '://' . $_SERVER['HTTP_HOS
 </head>
 <body>
     <?php include 'includes/header.php'; ?>
+    <div class="container mt-3">
+    <a href="<?php echo BASE_PATH; ?>index" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Torna alle ricette
+    </a>
     <div class="container">
         <h1><?php echo htmlspecialchars($recipe['title']); ?></h1>
         <?php
@@ -125,7 +129,7 @@ $base_url = ($_SERVER['REQUEST_SCHEME'] ?? 'https') . '://' . $_SERVER['HTTP_HOS
                 <form method="POST" id="delete-form" class="d-inline">
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <input type="hidden" name="action" value="delete">
-                    <button type="submit" class="btn btn-danger" onclick="confirmDelete(event)">Elimina</button>
+                    <button type="submit" class="btn btn-danger" data-loading-text="Eliminazione..." onclick="confirmDelete(event)">Elimina</button>
                 </form>
             </div>
         <?php endif; ?>

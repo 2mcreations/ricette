@@ -5,10 +5,12 @@ session_set_cookie_params([
     'lifetime' => 0,
     'path' => '/',
     'domain' => 'ricette.example.com',
-    'secure' => true, // Solo HTTPS
+    'secure' => true, // True, Solo HTTPS
     'httponly' => true, // Non accessibile da JavaScript
     'samesite' => 'Lax' // Protezione CSRF
 ]);
+
+const DEBUG = true;
 
 $host = 'localhost';
 $dbname = 'dbname';
