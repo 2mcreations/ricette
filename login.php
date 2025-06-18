@@ -71,6 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
     <?php include 'includes/header.php'; ?>
+    <div class="container mt-3">
+    <a href="<?php echo BASE_PATH; ?>index" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Torna alle ricette
+    </a>
     <div class="container">
         <h1>Login</h1>
         <?php
