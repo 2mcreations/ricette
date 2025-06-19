@@ -3,6 +3,7 @@ if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <style>
     body {
         margin: 0;
@@ -31,7 +32,9 @@ if (!isset($_SESSION['csrf_token'])) {
                     <li class="nav-item">
                         <form method="POST" action="<?php echo BASE_PATH; ?>logout" class="d-inline">
                             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-                            <button type="submit" class="nav-link btn btn-link">Logout (<?php echo htmlspecialchars($_SESSION['username']); ?>)</button>
+                            <button type="submit" class="nav-link btn btn-link d-flex">
+                                Logout (<?php echo htmlspecialchars($_SESSION['username']); ?>)
+                            </button>
                         </form>
                     </li>
                 <?php else: ?>

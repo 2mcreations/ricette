@@ -73,7 +73,7 @@ try {
                         <p class="card-text">Tempo: <?php echo htmlspecialchars($recipe['prep_time']); ?> min</p>
                         <a href="<?php echo BASE_PATH; ?>view_recipe?id=<?php echo htmlspecialchars($recipe['id']); ?>" class="btn btn-info">Visualizza</a>
                         <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $recipe['user_id']): ?>
-                        <a href="<?php echo BASE_PATH; ?>edit_recipe?id=<?php echo htmlspecialchars($recipe['id']); ?>" class="btn btn-warning ms-2">Modifica</a>
+                        <a href="<?php echo BASE_PATH; ?>edit_recipe?id=<?php echo htmlspecialchars($recipe['id']); ?>" class="btn btn-warning">Modifica</a>
                         <?php endif; ?>
                     </div>
                     </div>
