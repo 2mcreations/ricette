@@ -24,4 +24,16 @@ body {
     #multiplier {
         width: 100% !important; /* Input moltiplicatore a larghezza piena */
     }
+    form .input-group { /* ricerca */
+        flex-direction: row !important;
+        flex-wrap: nowrap;
+    }
+    form .input-group input,
+    form .input-group button { /* gruppo ricerca */
+        flex: 1 1 auto;
+        margin-bottom: 0px;
+    }
+    form .input-group button {
+        max-width: 100px;
+    }
 }
