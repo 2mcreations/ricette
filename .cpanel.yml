@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home2/xh2mcrea/ricette.mc1.cloud/
+    - export DEPLOYPATH=/home2/xh2mcrea/ricette.mc1.cloud
     - /bin/rm -rf $DEPLOYPATH/docker
