@@ -1,5 +1,5 @@
 const DEBUG = false;
-const CACHE_NAME = 'ricettario-v1.1.48';
+const CACHE_NAME = 'ricettario-v1.1.49';
 const STATIC_ASSETS = [
     '/css/style.css',
     '/js/script.js',

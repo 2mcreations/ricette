@@ -23,6 +23,9 @@ body {
     .btn-info {
         margin-bottom: 10px; /* Spazio tra i pulsanti */
     }
+    .btn-warning {
+        margin-bottom: 10px; /* Spazio tra i pulsanti */
+    }
     #multiplier-container {
         width: 100% !important;
         display: flex;
