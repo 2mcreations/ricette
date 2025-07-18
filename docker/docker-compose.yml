@@ -14,7 +14,7 @@ services:
 
   web:
     build:
-      context: ./docker
+      context: ./
       dockerfile: Dockerfile
     container_name: php_web
     depends_on:
