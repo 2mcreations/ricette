@@ -2,7 +2,7 @@
 
 // Configura i cookie di sessione
 session_set_cookie_params([
-    'lifetime' => 0,
+    'lifetime' => 2592000,
     'path' => '/',
     'domain' => 'ricette.example.com',
     'secure' => true, // True, Solo HTTPS
