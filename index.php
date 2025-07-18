@@ -51,16 +51,16 @@ try {
             <?php endif; ?>
             <?php if (isset($_SESSION['user_id'])): ?>
                 <p>Benvenuto, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
+                <a href="<?php echo BASE_PATH; ?>add_recipe" class="btn btn-primary mb-3">Aggiungi Ricetta</a>
+                <?php else: ?>
+                    <p>Effettua il <a href="<?php echo BASE_PATH; ?>login">login</a> per aggiungere ricette.</p>
+                <?php endif; ?>
                 <form method="GET" class="mb-4">
                     <div class="input-group">
                         <input type="text" class="form-control" name="search" placeholder="Cerca ricette per titolo..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
                         <button class="btn btn-outline-secondary" type="submit">Cerca</button>
                     </div>
                 </form>
-                <a href="<?php echo BASE_PATH; ?>add_recipe" class="btn btn-primary mb-3">Aggiungi Ricetta</a>
-                <?php else: ?>
-                    <p>Effettua il <a href="<?php echo BASE_PATH; ?>login">login</a> per aggiungere ricette.</p>
-                    <?php endif; ?>
                     <div class="row">
                         <?php if (empty($recipes)): ?>
                             <p>Nessuna ricetta disponibile.</p>
