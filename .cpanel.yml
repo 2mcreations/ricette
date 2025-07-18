@@ -1,7 +1,4 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home2/xh2mcrea/ricette.mc1.cloud/
-    - /bin/cp -R . $DEPLOYPATH
-    - /bin/rm -rf $DEPLOYPATH/docker
-    - /bin/rm -f $DEPLOYPATH/.cpanel.yml $DEPLOYPATH/docker-compose.yml
+    - export DEPLOYPATH=/home2/xh2mcrea/ricette.mc1.cloud/public_html/
