@@ -19,9 +19,16 @@ body {
     }
     .btn {
         width: 100%; /* Pulsanti a larghezza piena */
-        margin-bottom: 10px;
     }
-    #multiplier {
+    .btn-info {
+        margin-bottom: 10px; /* Spazio tra i pulsanti */
+    }
+    #multiplier-container {
+        width: 100% !important;
+        display: flex;
+        flex-wrap: nowrap;
+    }
+    .input-group>.form-control, .input-group>.form-floating, .input-group>.form-select {
         width: 100% !important; /* Input moltiplicatore a larghezza piena */
     }
     form .input-group { /* ricerca */

@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         try {
             $stmt = $pdo->prepare("DELETE FROM recipes WHERE id = ? AND user_id = ?");
             $stmt->execute([$_GET['id'], $_SESSION['user_id']]);
-            error_log("Debug view_recipe: Ricetta eliminata: id={$_GET['id']}, user_id={$_SESSION['user_id']}");
+            error_log("Debug view_recipe: Ricetta eliminata: id={\$_GET['id']}, user_id={\$_SESSION['user_id']}");
             unset($_SESSION['csrf_token']);
             $_SESSION['success'] = "Ricetta eliminata con successo";
             header("Location: " . BASE_PATH . "index");
@@ -100,7 +100,11 @@ $base_url = ($_SERVER['REQUEST_SCHEME'] ?? 'https') . '://' . $_SERVER['HTTP_HOS
         <p><strong>Porzioni:</strong> <span id="servings"><?php echo htmlspecialchars($recipe['servings']); ?></span></p>
         <div class="mb-3">
             <label for="multiplier" class="form-label">Moltiplicatore porzioni:</label>
-            <input type="number" id="multiplier" class="form-control w-25" value="1" min="1" step="1" oninput="adjustQuantities(<?php echo htmlspecialchars($recipe['servings']); ?>)">
+            <div class="input-group w-25" id="multiplier-container">
+                <button class="btn btn-outline-secondary" type="button" id="minus-btn">-</button>
+                <input type="number" id="multiplier" class="form-control text-center" value="1" min="1" step="1" oninput="adjustQuantities(<?php echo htmlspecialchars($recipe['servings']); ?>)">
+                <button class="btn btn-outline-secondary" type="button" id="plus-btn">+</button>
+            </div>
         </div>
         <h3>Ingredienti</h3>
         <ul id="ingredients-list">

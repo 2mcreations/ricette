@@ -41,6 +41,30 @@ function adjustQuantities(originalServings) {
     if (DEBUG) console.log('adjustQuantities: Nuove porzioni:', newServings);
 }
 
+function setupMultiplierButtons() {
+    const minusBtn = document.getElementById('minus-btn');
+    const plusBtn = document.getElementById('plus-btn');
+    const multiplierInput = document.getElementById('multiplier');
+
+    if (minusBtn && plusBtn && multiplierInput) {
+        minusBtn.addEventListener('click', () => {
+            let currentValue = parseInt(multiplierInput.value);
+            if (currentValue > 1) {
+                multiplierInput.value = currentValue - 1;
+                // Trigger the 'input' event to update quantities
+                multiplierInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        });
+
+        plusBtn.addEventListener('click', () => {
+            let currentValue = parseInt(multiplierInput.value);
+            multiplierInput.value = currentValue + 1;
+            // Trigger the 'input' event to update quantities
+            multiplierInput.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+    }
+}
+
 // Prevenire doppia sottomissione dei form
 function setupFormSubmission() {
     const forms = document.querySelectorAll('form');
@@ -139,4 +163,5 @@ window.addEventListener('load', () => {
     if (DEBUG) console.log('Window load: Inizializzazione');
     setupFormSubmission();
     setupShareButton();
+    setupMultiplierButtons();
 });
