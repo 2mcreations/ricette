@@ -4,4 +4,6 @@ deployment:
     - export DEPLOYPATH=/home2/xh2mcrea/ricette.mc1.cloud/
     - /bin/cp -R . $DEPLOYPATH
     - /bin/rm -rf $DEPLOYPATH/docker
+    - /bin/rm -rf $DEPLOYPATH/.git
+    - /bin/rm -rf $DEPLOYPATH/.gitignore
     - /bin/rm -f $DEPLOYPATH/.cpanel.yml $DEPLOYPATH/docker-compose.yml
