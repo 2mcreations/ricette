@@ -7,7 +7,7 @@ RewriteEngine On
 </Files>
 
 # Impedisce l'accesso a file e directory sensibili
-<FilesMatch "^(phinx\.php|composer\.json|composer\.lock)">
+<FilesMatch "^(phinx\.php|composer\.json|composer\.lock|config\.php)">
     Order Allow,Deny
     Deny from all
 </FilesMatch>
