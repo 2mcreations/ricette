@@ -3,3 +3,5 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home2/xh2mcrea/ricette.mc1.cloud
     - /bin/rm -rf $DEPLOYPATH/docker
+    - cd $DEPLOYPATH
+    - /usr/local/bin/php vendor/bin/phinx migrate

@@ -1,23 +1,32 @@
 <?php
 
+const DEBUG = true;
+const HOSTNAME = 'http://localhost';
+const BASE_PATH = '/';
+
 // Configura i cookie di sessione
 session_set_cookie_params([
-    'lifetime' => 2592000,
-    'path' => '/',
-    'domain' => 'ricette.example.com',
+    'lifetime' => 2592000, // 1 mese
+    'path' => BASE_PATH,
+    'domain' => HOSTNAME,
     'secure' => true, // True, Solo HTTPS
     'httponly' => true, // Non accessibile da JavaScript
     'samesite' => 'Lax' // Protezione CSRF
 ]);
 
-const DEBUG = true;
+// SMTP Configuration (for use with a mailer library like PHPMailer)
+const SMTP_HOST = 'your_smtp_host';
+const SMTP_PORT = 465;
+const SMTP_USERNAME = 'your_smtp_username';
+const SMTP_PASSWORD = 'your_smtp_password';
+const SMTP_ENCRYPTION = 'ssl'; // or 'tls'
+const SMTP_FROM_EMAIL = 'noreply@mc1.cloud';
+const SMTP_FROM_NAME = 'Ricettario';
 
 $host = 'localhost';
 $dbname = 'dbname';
 $username = 'username';
 $password = 'password';
-
-define('BASE_PATH', '/');
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);

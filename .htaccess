@@ -6,6 +6,14 @@ RewriteEngine On
     Deny from all
 </Files>
 
+# Impedisce l'accesso a file e directory sensibili
+<FilesMatch "^(phinx\.php|composer\.json|composer\.lock)">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+RedirectMatch 404 /vendor/
+
 # Reindirizza richieste con .php alla versione senza .php (es. /logout.php → /logout)
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.php -f

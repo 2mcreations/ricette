@@ -102,6 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <button type="submit" class="btn btn-primary" data-loading-text="Accesso...">Accedi</button>
         </form>
+        <p class="mt-3"><a href="<?php echo BASE_PATH; ?>forgot_password">Password dimenticata?</a></p>
         <p class="mt-3">Non hai un account? <a href="<?php echo BASE_PATH; ?>register">Registrati</a></p>
     </div>
     <?php include 'includes/footer.php'; ?>
